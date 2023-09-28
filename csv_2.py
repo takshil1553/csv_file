@@ -1,7 +1,6 @@
 import psycopg2
 import csv
 
-
 # Database connection parameters
 db_params = {
     'dbname': 'Fantasy_db',
@@ -12,12 +11,13 @@ db_params = {
 }
 
 # SQL query to select data from a table
-query = 'SELECT * FROM public.user'
+select_query = 'SELECT * FROM public.match_type'
 
-delete_query = 'DELETE FROM public.user'
+# SQL query to delete data from the table after export (adjust as needed)
+delete_query = 'DELETE FROM public.match_type'
 
 # Output CSV file name
-output_csv = '/home/admin-t/Desktop/csv file/user.csv'
+output_csv = '/home/admin-t/Desktop/csv file/match_type.csv'
 
 try:
     # Establish a database connection
@@ -26,8 +26,8 @@ try:
     # Create a cursor object
     cursor = conn.cursor()
     
-    # Execute the SQL query
-    cursor.execute(query)
+    # Execute the SQL query to select data
+    cursor.execute(select_query)
     
     # Fetch all the data
     data = cursor.fetchall()
@@ -46,6 +46,11 @@ try:
         csv_writer.writerows(data)
     
     print(f'Data exported to {output_csv}')
+    
+    # Now, you can execute the SQL query to delete the data
+    cursor.execute(delete_query)
+    conn.commit()
+    print('Data deleted from the database')
     
 except psycopg2.Error as e:
     print('Error:', e)
